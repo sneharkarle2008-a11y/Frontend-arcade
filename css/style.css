@@ -149,6 +149,7 @@ a { color: var(--cyan); }
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 10px 16px;
@@ -164,14 +165,16 @@ a { color: var(--cyan); }
 
 .screen.active { display: block; }
 
-/* The game screen needs to fill the full height #app has available
-   (rather than just center a fixed-height block) so the canvas can
-   claim exactly the remaining space instead of overflowing past the
-   viewport. */
+/* The game screen fills whatever space #app has left, using flex-grow
+   (a first-class flex sizing mechanism) rather than a percentage height
+   — percentage heights need every ancestor in the chain to report a
+   "definite" height, which is exactly the kind of thing that quietly
+   breaks across browsers. flex-grow doesn't have that failure mode. */
 #screen-game.active {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   max-width: var(--game-max-width, 480px);
 }
 
