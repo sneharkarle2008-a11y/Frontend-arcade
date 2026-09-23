@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>ASTRA ARCADE</title>
+<meta name="description" content="ASTRA ARCADE — a browser game console playable with a wireless ESP32 controller or touch." />
+<meta name="theme-color" content="#05060f" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/arcade.css" />
+</head>
+<body>
+
+<div id="starfield" aria-hidden="true"></div>
+
+<!-- ============ HEADER / STATUS BAR ============ -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◆</span>
+    <span class="brand-name">ASTRA <span class="accent">ARCADE</span></span>
+  </div>
+  <div class="status-cluster">
+    <span id="controllerStatus" class="status-pill status-offline">
+      <span class="dot"></span> NO CONTROLLER
+    </span>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ SCREEN: START ============ -->
+  <section id="screen-start" class="screen active">
+    <div class="glass-panel start-panel">
+      <h1 class="astra-title">ASTRA ARCADE</h1>
+      <p class="astra-subtitle">YOUR WEB GAME CONSOLE</p>
+
+      <div class="mode-buttons">
+        <button class="mode-btn" id="btnEsp32Mode">
+          <span class="mode-icon">🎮</span>
+          <span class="mode-label">ESP32 CONTROLLER</span>
+          <span class="mode-sub">Play with your physical wireless controller</span>
+        </button>
+        <button class="mode-btn" id="btnTouchMode">
+          <span class="mode-icon">📱</span>
+          <span class="mode-label">TOUCH CONTROLS</span>
+          <span class="mode-sub">Play right now with on-screen buttons</span>
+        </button>
+      </div>
+
+      <p class="hint-text">No controller? Touch mode works instantly on any device.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN: PAIRING ============ -->
+  <section id="screen-pairing" class="screen">
+    <div class="glass-panel pairing-panel">
+      <h2 class="panel-title">CONNECT CONTROLLER</h2>
+      <p class="panel-desc">Power on your ASTRA ESP32 controller, then enter its ID and pairing code below.</p>
+
+      <div class="server-url-row">
+        <label for="serverUrlInput">WebSocket Server URL</label>
+        <input type="text" id="serverUrlInput" placeholder="wss://your-server.onrender.com" />
+      </div>
+
+      <div class="pairing-form">
+        <div class="field">
+          <label for="controllerIdInput">Controller ID</label>
+          <input type="text" id="controllerIdInput" placeholder="ASTRA-7F3A" maxlength="12" autocomplete="off" autocapitalize="characters" />
+        </div>
+        <div class="field">
+          <label for="pairingCodeInput">Pairing Code</label>
+          <input type="text" id="pairingCodeInput" placeholder="482913" maxlength="6" inputmode="numeric" autocomplete="off" />
+        </div>
+        <button id="btnConnectController" class="primary-btn">CONNECT</button>
+      </div>
+
+      <div id="pairingStatus" class="pairing-status">
+        <span class="dot pulse"></span> <span id="pairingStatusText">Enter details above and press Connect</span>
+      </div>
+
+      <button class="ghost-btn" id="btnBackFromPairing">← BACK</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN: MENU ============ -->
+  <section id="screen-menu" class="screen">
+    <div class="glass-panel menu-panel">
+      <h2 class="menu-title">ASTRA ARCADE</h2>
+      <ul id="gameMenuList" class="game-menu">
+        <li data-game="snake" class="menu-item selected"><span class="cursor">▶</span> Snake</li>
+        <li data-game="pong" class="menu-item"><span class="cursor">▶</span> Pong</li>
+        <li data-game="shooter" class="menu-item"><span class="cursor">▶</span> Space Shooter</li>
+        <li data-game="flappy" class="menu-item"><span class="cursor">▶</span> Flappy</li>
+        <li data-game="racing" class="menu-item"><span class="cursor">▶</span> Racing</li>
+      </ul>
+      <div class="menu-footer">
+        <span><kbd>▲▼</kbd> Move</span>
+        <span><kbd>A</kbd> Select</span>
+        <span><kbd>B</kbd> Back</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN: GAME ============ -->
+  <section id="screen-game" class="screen">
+    <div class="game-shell">
+      <div class="game-hud">
+        <button id="btnGameBack" class="hud-btn">← MENU</button>
+        <span id="gameTitle" class="hud-title">GAME</span>
+        <span id="gameScore" class="hud-score">SCORE 0</span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas"></canvas>
+        <div id="gameOverlay" class="game-overlay hidden">
+          <div class="overlay-content">
+            <h3 id="overlayTitle">Paused</h3>
+            <p id="overlaySubtitle"></p>
+            <button id="overlayPrimaryBtn" class="primary-btn">Resume</button>
+          </div>
+        </div>
+        <div id="controllerLostOverlay" class="game-overlay hidden">
+          <div class="overlay-content">
+            <h3>Controller disconnected</h3>
+            <p>Your ESP32 controller lost connection to the server.</p>
+            <button id="btnReconnectController" class="primary-btn">Reconnect</button>
+            <button id="btnSwitchToTouch" class="ghost-btn">Use Touch Controls</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ TOUCH CONTROLS OVERLAY ============ -->
+<div id="touchControls" class="touch-controls hidden">
+  <div class="dpad">
+    <button class="tbtn tbtn-up" data-btn="UP">▲</button>
+    <button class="tbtn tbtn-left" data-btn="LEFT">◀</button>
+    <button class="tbtn tbtn-right" data-btn="RIGHT">▶</button>
+    <button class="tbtn tbtn-down" data-btn="DOWN">▼</button>
+  </div>
+  <div class="action-pad">
+    <button class="tbtn tbtn-action tbtn-b" data-btn="B">B</button>
+    <button class="tbtn tbtn-action tbtn-a" data-btn="A">A</button>
+  </div>
+</div>
+
+<script src="js/websocket.js"></script>
+<script src="js/input.js"></script>
+<script src="js/touch.js"></script>
+<script src="js/games/snake.js"></script>
+<script src="js/games/pong.js"></script>
+<script src="js/games/shooter.js"></script>
+<script src="js/games/flappy.js"></script>
+<script src="js/games/racing.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

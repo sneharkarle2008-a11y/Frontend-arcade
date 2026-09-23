@@ -1,0 +1,352 @@
+/* ASTRA ARCADE — screen & widget specific styles */
+
+/* ---------- Start screen ---------- */
+.start-panel { text-align: center; }
+
+.astra-title {
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+  margin: 6px 0 2px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--cyan) 10%, var(--purple) 60%, var(--pink) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 40px rgba(160,107,255,0.25);
+}
+
+.astra-subtitle {
+  color: var(--text-dim);
+  letter-spacing: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.mode-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.mode-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(77,238,234,0.08), rgba(160,107,255,0.08));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mode-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--cyan-soft);
+  box-shadow: 0 12px 30px rgba(77,238,234,0.12);
+}
+
+.mode-icon { font-size: 1.8rem; }
+.mode-label { font-weight: 800; letter-spacing: 1px; font-size: 0.95rem; }
+.mode-sub { color: var(--text-dim); font-size: 0.78rem; }
+
+.hint-text {
+  margin-top: 22px;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+
+/* ---------- Pairing screen ---------- */
+.panel-title {
+  text-align: center;
+  letter-spacing: 2px;
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  color: var(--cyan);
+}
+.panel-desc { text-align: center; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+.server-url-row, .field { margin-bottom: 14px; }
+.server-url-row label, .field label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.server-url-row input, .field input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.server-url-row input:focus, .field input:focus { border-color: var(--cyan); }
+
+.pairing-form { margin-top: 18px; }
+.pairing-form .primary-btn { width: 100%; margin-top: 6px; }
+
+.pairing-status {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--panel-border);
+}
+
+.pairing-status.success { color: var(--success); border-color: rgba(77,238,160,0.3); }
+.pairing-status.error { color: var(--danger); border-color: rgba(255,95,109,0.3); }
+
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+.dot.pulse { animation: pulse 1.4s ease-in-out infinite; background: var(--cyan); }
+@keyframes pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* ---------- Menu screen ---------- */
+.menu-title {
+  text-align: center;
+  letter-spacing: 3px;
+  font-size: 1.6rem;
+  margin: 0 0 20px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.game-menu {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+
+.menu-item .cursor { opacity: 0; color: var(--cyan); transition: opacity 0.15s ease; }
+
+.menu-item.selected {
+  background: linear-gradient(135deg, rgba(77,238,234,0.12), rgba(160,107,255,0.12));
+  border-color: var(--cyan-soft);
+  color: var(--text-main);
+  transform: translateX(4px);
+}
+.menu-item.selected .cursor { opacity: 1; }
+
+.menu-footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 16px;
+}
+
+kbd {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--panel-border);
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 0.75rem;
+  margin-right: 4px;
+}
+
+/* ---------- Game screen ---------- */
+.game-shell {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.game-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 4px;
+  margin-bottom: 8px;
+}
+
+.hud-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--panel-border);
+  color: var(--text-dim);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+.hud-btn:hover { color: var(--text-main); }
+
+.hud-title {
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  font-size: 0.9rem;
+}
+
+.hud-score {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.04);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--panel-border);
+}
+
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(77,238,234,0.06) inset;
+  background: #060814;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(4,6,16,0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 24px;
+  max-width: 320px;
+}
+
+.overlay-content h3 {
+  font-size: 1.5rem;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.overlay-content p { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 18px; line-height: 1.5; }
+.overlay-content .primary-btn { width: 100%; margin-bottom: 8px; }
+.overlay-content .ghost-btn { width: 100%; margin-top: 0; }
+
+/* ---------- Touch controls ---------- */
+.touch-controls {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(14px + var(--safe-bottom));
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 18px;
+  pointer-events: none;
+}
+
+.dpad, .action-pad { pointer-events: auto; }
+
+.dpad {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.tbtn {
+  position: absolute;
+  background: rgba(20,24,46,0.75);
+  border: 1px solid var(--cyan-soft);
+  color: var(--cyan);
+  border-radius: 14px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  touch-action: none;
+  user-select: none;
+  transition: background 0.1s ease, transform 0.1s ease;
+}
+
+.tbtn:active, .tbtn.active-touch {
+  background: rgba(77,238,234,0.35);
+  transform: scale(0.94);
+}
+
+.tbtn-up    { top: 0; left: 50px; width: 50px; height: 50px; }
+.tbtn-down  { bottom: 0; left: 50px; width: 50px; height: 50px; }
+.tbtn-left  { top: 50px; left: 0; width: 50px; height: 50px; }
+.tbtn-right { top: 50px; right: 0; width: 50px; height: 50px; }
+
+.action-pad {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
+
+.tbtn-action {
+  border-radius: 50%;
+  width: 66px;
+  height: 66px;
+  font-size: 1.3rem;
+  border-color: var(--purple-soft);
+  color: var(--purple);
+}
+.tbtn-action:active, .tbtn-action.active-touch { background: rgba(160,107,255,0.35); }
+
+.tbtn-a { position: absolute; right: 0; bottom: 30px; border-color: var(--cyan-soft); color: var(--cyan); }
+.tbtn-b { position: absolute; left: 0; bottom: 0; }
+
+@media (min-width: 700px) {
+  .touch-controls { max-width: 640px; left: 50%; transform: translateX(-50%); right: auto; width: 100%; }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .dpad, .action-pad { transform: scale(0.85); }
+}
