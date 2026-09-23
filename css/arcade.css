@@ -186,11 +186,16 @@ kbd {
 /* ---------- Game screen ---------- */
 .game-shell {
   width: 100%;
-  max-width: 640px;
+  max-width: var(--game-max-width, 480px);
   margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .game-hud {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -230,7 +235,8 @@ kbd {
 .canvas-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  flex: 1 1 auto;
+  min-height: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--panel-border);
@@ -275,29 +281,35 @@ kbd {
 .overlay-content .primary-btn { width: 100%; margin-bottom: 8px; }
 .overlay-content .ghost-btn { width: 100%; margin-top: 0; }
 
-/* ---------- Touch controls ---------- */
+/* ---------- Touch controls ----------
+   In normal document flow (NOT position:fixed) as the last flex child
+   of <body>, sized by its own content. This is what keeps it from
+   floating over/overlapping the game canvas above it — the canvas's
+   flex:1 claims exactly what's left once this row's real height is
+   subtracted, on every screen size. */
 .touch-controls {
-  position: fixed;
-  left: 0; right: 0;
-  bottom: calc(14px + var(--safe-bottom));
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: var(--game-max-width, 480px);
+  margin: 0 auto;
   z-index: 20;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 18px;
-  pointer-events: none;
+  padding: 10px 18px calc(14px + var(--safe-bottom));
+  gap: 16px;
 }
 
-.dpad, .action-pad { pointer-events: auto; }
-
 .dpad {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
   width: 150px;
   height: 150px;
 }
 
 .tbtn {
-  position: absolute;
   background: rgba(20,24,46,0.75);
   border: 1px solid var(--cyan-soft);
   color: var(--cyan);
@@ -319,10 +331,13 @@ kbd {
   transform: scale(0.94);
 }
 
-.tbtn-up    { top: 0; left: 50px; width: 50px; height: 50px; }
-.tbtn-down  { bottom: 0; left: 50px; width: 50px; height: 50px; }
-.tbtn-left  { top: 50px; left: 0; width: 50px; height: 50px; }
-.tbtn-right { top: 50px; right: 0; width: 50px; height: 50px; }
+/* Grid coordinates scale automatically with .dpad's own width/height,
+   so resizing the pad (e.g. in the landscape media query below) never
+   misaligns the buttons the way fixed pixel offsets would. */
+.tbtn-up    { grid-column: 2; grid-row: 1; }
+.tbtn-left  { grid-column: 1; grid-row: 2; }
+.tbtn-right { grid-column: 3; grid-row: 2; }
+.tbtn-down  { grid-column: 2; grid-row: 3; }
 
 .action-pad {
   position: relative;
@@ -331,22 +346,28 @@ kbd {
 }
 
 .tbtn-action {
+  position: absolute;
   border-radius: 50%;
-  width: 66px;
-  height: 66px;
+  width: 44%;
+  height: 44%;
   font-size: 1.3rem;
   border-color: var(--purple-soft);
   color: var(--purple);
 }
 .tbtn-action:active, .tbtn-action.active-touch { background: rgba(160,107,255,0.35); }
 
-.tbtn-a { position: absolute; right: 0; bottom: 30px; border-color: var(--cyan-soft); color: var(--cyan); }
-.tbtn-b { position: absolute; left: 0; bottom: 0; }
+.tbtn-a { right: 0; bottom: 20%; border-color: var(--cyan-soft); color: var(--cyan); }
+.tbtn-b { left: 0; bottom: 0; }
 
-@media (min-width: 700px) {
-  .touch-controls { max-width: 640px; left: 50%; transform: translateX(-50%); right: auto; width: 100%; }
+@media (max-height: 700px) {
+  /* Grid cells and percentage-sized action buttons scale automatically
+     with the container, so only the container dimensions need to change. */
+  .dpad, .action-pad { width: 130px; height: 130px; }
 }
 
 @media (max-height: 560px) and (orientation: landscape) {
-  .dpad, .action-pad { transform: scale(0.85); }
+  .touch-controls { padding-top: 4px; padding-bottom: calc(6px + var(--safe-bottom)); }
+  .dpad, .action-pad { width: 108px; height: 108px; }
+  .tbtn { font-size: 1.1rem; }
+  .tbtn-action { font-size: 1.05rem; }
 }

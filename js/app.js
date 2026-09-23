@@ -143,6 +143,7 @@
     appMode = 'touch';
     TouchControls.show();
     controllerLostOverlay.classList.add('hidden');
+    if (currentGame) resizeCanvas(); // touch controls now take up real layout space
     resumeLoop();
   });
 

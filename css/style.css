@@ -19,7 +19,11 @@
   --radius-sm: 8px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --game-max-width: 480px;
 }
+
+@media (min-width: 700px)  { :root { --game-max-width: 620px; } }
+@media (min-width: 1100px) { :root { --game-max-width: 760px; } }
 
 * { box-sizing: border-box; }
 
@@ -34,13 +38,23 @@ body {
   background: radial-gradient(circle at 20% 0%, #131a3a 0%, var(--bg-navy) 45%, var(--bg-deep) 100%);
   color: var(--text-main);
   font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  min-height: 100%;
+  height: 100vh;
   overflow-x: hidden;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
+  /* Flex column: topbar, #app, touch-controls all share real vertical
+     space instead of #app being centered over the full viewport while
+     touch-controls floats fixed on top of it. This is what keeps the
+     game canvas from overflowing under a floating control pad. */
+  display: flex;
+  flex-direction: column;
+}
+
+@supports (height: 100dvh) {
+  body { height: 100dvh; }
 }
 
 button, input {
@@ -80,6 +94,7 @@ a { color: var(--cyan); }
 .topbar {
   position: relative;
   z-index: 5;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -131,11 +146,13 @@ a { color: var(--cyan); }
 #app {
   position: relative;
   z-index: 2;
-  min-height: calc(100vh - 60px);
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px 24px;
+  padding: 10px 16px;
+  overflow-y: auto;
 }
 
 .screen {
@@ -146,6 +163,17 @@ a { color: var(--cyan); }
 }
 
 .screen.active { display: block; }
+
+/* The game screen needs to fill the full height #app has available
+   (rather than just center a fixed-height block) so the canvas can
+   claim exactly the remaining space instead of overflowing past the
+   viewport. */
+#screen-game.active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: var(--game-max-width, 480px);
+}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
@@ -198,5 +226,6 @@ a { color: var(--cyan); }
 }
 
 @media (min-width: 900px) {
-  #app { padding-top: 40px; }
+  .screen:not(#screen-game) { max-width: 780px; }
+  .glass-panel { padding: 40px 44px; }
 }
